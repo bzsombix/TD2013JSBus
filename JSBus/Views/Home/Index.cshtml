@@ -1,0 +1,29 @@
+﻿<div id="body">
+    <section class="content-wrapper main-content clear-fix">
+        <form id="sendMessages">
+            <input id="count" name="count" type="range" min="1" max="1000" value="5" />
+            <div>
+                <button type="submit">Send messages with JS bus</button>
+            </div>
+        </form>
+        
+        <figure id="visualization">
+            <div id="graphs"></div>
+            <figcaption>Current status of message flow</figcaption>
+        </figure>
+    </section>
+</div>
+
+@section scripts
+{
+    @*Jquery needed by SignalR, not by JSBus itself*@
+    @Scripts.Render("~/bundles/JQuery")
+    <script src="~/Scripts/jquery.signalR-1.0.1.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    @Scripts.Render("~/bundles/JSBus")
+
+    <script src="~/Scripts/DataBar.js"></script>
+    <script src="~/Scripts/sampleUsage.js"></script>
+}
+
