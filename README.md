@@ -17,5 +17,4 @@ Meaningful code can be found from
 - Scripts/JSBus: Bus implementation
 - Scripts/sampleUsage.js: Demonstrates how to use the bus
 
------
-Copyright 2013 Tero Teelahti.
+
