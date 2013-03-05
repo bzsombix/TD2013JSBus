@@ -1,7 +1,10 @@
 ﻿namespace JSBus.Hubs
 {
     using System;
+    using System.ComponentModel;
     using System.Globalization;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNet.SignalR;
     using Microsoft.AspNet.SignalR.Hubs;
@@ -11,15 +14,18 @@
     {
         private readonly JSBusTestBusinessLogic bl = new JSBusTestBusinessLogic();
 
-        public void Execute(TestCommand command)
+        public Task Execute(TestCommand command)
         {
             // TODO: Should check whether this command has already been received 
             // TODO: Store the message in a message store
             // Acknowledge caller that we have this message persisted
             this.Clients.Caller.ack(command.Id);
 
-            // In reality should find the correct handler for given command name and give the command to that class
-            this.bl.Test(command, this.Clients.Caller);
+            // In reality should find the correct handler for given command name and give the 
+            // command to that class
+            return Task.Factory.StartNew(
+                () =>
+                    { this.bl.Test(command, this.Clients.Caller); });
         }
     }
 
@@ -27,13 +33,12 @@
     {
         private readonly Random randomWait = new Random();
 
-        public void Test(TestCommand command, dynamic client)
+        public async void Test(TestCommand command, dynamic client)
         {
-            // Wait a random time, max 50 ms
-            int delay = this.randomWait.Next(500);
+            // Wait a random time, max 5 s
+            int delay = this.randomWait.Next(5000);
 
-            // TODO: Async-await does not work in ASP.NET, must use other means of threading instead
-            // Task.Delay(delay);
+            await Task.Delay(delay);
 
             // Notify listener about success
             var reply = new TestEvent
@@ -43,7 +48,7 @@
                 Answer = "Executed with delay " + delay.ToString(CultureInfo.CurrentCulture)
             };
 
-            client.onEvent(reply);
+            client.onEvent(reply); 
         }
     }
 
